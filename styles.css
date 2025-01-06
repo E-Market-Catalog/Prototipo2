@@ -1,0 +1,242 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #070707;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+    max-width: 100%;
+}
+
+#barcodeMessage{
+    color: #ffffff;
+}
+
+h1 {
+    color: #ff001e;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #ff0000eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1dcd26;
+}
+
+
+#scanner-container {
+    display: block;
+    width: 80%;
+    height: 450px;
+    margin: 15px auto;  /* Añadí un margen arriba y abajo para separarlo del botón */
+    padding-top: 20px;  /* Ajusté el padding superior para que el video no esté tan pegado al borde */
+    background: none; /* Elimina el fondo */
+    border: none;  /* Elimina el borde */
+    overflow: hidden;
+}
+
+#scanner-container video {
+    object-fit: cover;  /* Hace que el video ocupe todo el contenedor sin deformarse */
+    width: 100%;
+    height: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+#productoInfo {
+    display: flex; /* Activar flexbox */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    flex-direction: column; /* Colocar elementos en columna */
+    margin-top: 20px; /* Separación superior */
+}
+
+#imagenProducto {
+    display: none; /* Ocultar la imagen por defecto */
+    max-width: 300px; /* Ancho máximo */
+    max-height: 300px; /* Altura máxima */
+    border: 1px solid #ddd; /* Borde gris claro */
+    padding: 10px; /* Espaciado interno */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+}
+
+#form-container {
+    padding: 20px; /* Agrega un poco de espacio dentro del contenedor */
+    background-color: white; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    border: 1px solid #ccc; /* Borde gris claro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    margin-top: 20px !important;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+
+.form-group,
+.form-row {
+    margin-bottom: 15px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.form-column {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.form-column:last-child {
+    margin-right: 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: center; /* Centra el contenido del label */
+    color: rgb(0, 0, 0);
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: center; /* Centra el texto dentro del label */
+}
+
+#nombre {
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px; /* Tamaño predeterminado de texto */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+input:disabled {
+    background-color: #e9ecef;
+}
+
+/* Video Container */
+#videoContainer {
+    position: relative;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 15px;
+
+}
+
+#startScan, #stopScan {
+    margin-bottom: 8px;  /* Aumenté el margen inferior de los botones */
+}
+
+
+#video {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Overlay */
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.guide-frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60%; /* Reducimos el tamaño del marco */
+    height: 25%; /* Ajustamos el alto para códigos pequeños */
+    border: 4px dashed #00ff00;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    animation: pulse 1.5s infinite;
+}
+
+
+/* Animación de pulso */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+}
+
+
+/* Para pantallas más grandes (PC) */
+@media (min-width: 768px) {
+
+    input {
+        font-size: 16px; /* Tamaño predeterminado de texto */
+        text-align: center;
+    }
+
+    #nombre{
+        font-size: 16px; /* Tamaño predeterminado de texto */
+    }
+
+    #imagenProducto {
+        max-width: 500px; /* Aumentar tamaño solo en pantallas grandes */
+        height: auto; /* Mantener la relación de aspecto */
+    }
+
+    #scanner-container {
+        width: 60%;  /* Ajusté el contenedor a un tamaño más pequeño en pantallas grandes */
+        height: 450px;  /* Mantengo la altura fija para mantener la proporción */
+        margin: 1px auto;  /* Aseguro un margen más grande para separarlo del botón */
+    }
+    
+    #scanner-container video {
+        object-fit: cover;
+        width: 60%;
+        height: 100%;
+    }
+
+    .guide-frame {
+        height: 35%; /* Ajustamos el alto para códigos pequeños */
+    }
+
+}

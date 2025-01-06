@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #070707;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        /* Overlay */
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .guide-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60%;
+            height: 25%;
+            border: 4px dashed #00ff00;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+        }
+
+        video {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        #backButton {
+            padding: 10px 20px;
+            background-color: #FF5722;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #ff001e;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        h2 {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #000000;
+        }
+
+        #productList {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            margin-top: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #productList h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .productBlock {
+            background-color: #f0f0f0;
+            padding: 10px;
+            width: 96%;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .productBlock:hover {
+            background-color: #e0e0e0;
+        }
+
+        .productBlock span {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        #productForm {
+            background-color: rgb(255, 255, 255);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            display: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1em;
+            box-sizing: border-box;
+            text-align: center;  /* Centra el texto dentro de las casillas */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #saveButton {
+            background-color: #178320;
+            margin-top: 25px;
+            padding: 15px 50px;
+            font-size: 1.2em;
+        }
+
+        #saveButton:hover {
+            background-color: #00ff15;
+        }
+
+        #addButton {
+            background-color: #ff0000eb;
+        }
+
+        #addButton:hover {
+            background-color: #961515cc;
+        }
+
+        .addProductContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 20px;
+            padding: 0 20px;
+        }
+
+        .addProductText {
+            font-size: 1.2em;
+            color: #ffffff;
+        }
+
+        #registerButton {
+            padding: 10px 20px;
+            background-color: #b22c2c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+            width: 80%;
+        }
+
+        #registerButton:hover {
+            background-color: #4CAF50;
+        }
+
+
+        #scanBarcodeButton{
+            padding: 10px 20px;
+            background-color: #c01c1c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background-color 0.3s ease;
+            width: 25%;
+        }
+
+        #scanBarcodeButton:hover{
+            background-color: #4CAF50;
+        }
+
+        .addProductButton {
+            font-size: 1.5em;
+            background: none;
+            border: none;
+            color: #000000;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .addProductButton:hover {
+            color: #000000;
+        }
+
+        #videoContainer {
+            position: relative;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        #scanner-container {
+            width: 60%;
+            height: 450px;
+            margin: 1px auto;
+        }
+
+        #scanner-container video {
+            object-fit: cover;
+            width: 60%;
+            height: 100%;
+        }
+
+        .guide-frame {
+            height: 35%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            h2 {
+                font-size: 1em;
+            }
+
+            input {
+                font-size: 0.9em;
+            }
+
+            button {
+                font-size: 0.9em;
+                padding: 8px 16px;
+            }
+
+            #productForm {
+                width: 90%;
+                padding: 15px;
+            }
+
+            .addProductContainer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 90%;
+                max-width: 500px;
+                margin-top: 20px;
+                padding: 0 20px;
+            }
+
+            .addProductButton {
+                font-size: 2em;
+            }
+
+            #scanner-container {
+                width: 60%;
+                height: 450px;
+                margin: 1px auto;
+            }
+
+            #scanBarcodeButton{
+                padding: 10px 20px;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                font-size: 1em;
+                cursor: pointer;
+                margin: 20px 0;
+                transition: background-color 0.3s ease;
+                width: 70%;
+            }
+
+            #scanner-container video {
+                object-fit: cover;
+                width: 60%;
+                height: 100%;
+            }
+
+            .guide-frame {
+                height: 35%;
+            }
+        }
+    </style>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+</head>
+<body>
+
+    <!-- Título principal -->
+    <h1>Lista de Productos Registrados</h1>
+
+    <!-- Botón para escanear código de barras -->
+    <button id="scanBarcodeButton" style="display: none;" onclick="startScanning()">Escanear Código de Barras</button>
+
+    <!-- Sección para añadir un producto -->
+    <div class="addProductContainer">
+        <div class="addProductText">Añadir Producto</div>
+        <button class="addProductButton" id="addButton">+</button>
+    </div>
+
+    <!-- Recuadro de productos registrados -->
+    <div id="productList">
+        <h3>Lista de productos registrados:</h3>
+        <!-- Los productos aparecerán aquí como bloques pequeños -->
+    </div>
+
+    <!-- Botón de guardar -->
+    <button id="saveButton" style="display:none;">Guardar</button>
+
+    <!-- Formulario para agregar o editar un producto -->
+    <div id="productForm" style="display:none;">
+        <h2>Registrar Producto</h2>
+        <label for="ean">EAN:</label>
+        <input type="text" id="ean" required><br>
+        <label for="as400">AS400:</label>
+        <input type="text" id="as400" required><br>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required><br>
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" required><br>
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" required><br>
+        <label for="descuento">Descuento:</label>
+        <input type="number" id="descuento" required><br>
+        <label for="precio_descuento">Precio con descuento:</label>
+        <input type="number" id="precio_descuento" required><br>
+        <label for="categoria">Categoría:</label>
+        <input type="text" id="categoria" required><br>
+        <label for="imagen">Imagen (URL):</label>
+        <input type="text" id="imagen" required><br>
+
+        <button id="registerButton">Registrar</button>
+    </div>
+
+    <!-- Contenedor del escáner de código de barras -->
+    <div id="videoContainer" class="hidden">
+        <video id="video" autoplay></video>
+        <div id="overlay">
+            <div class="guide-frame"></div>
+        </div>
+    </div>
+
+    <script>
+        const productList = [];
+        let currentEditingProduct = null;  // Variable para almacenar el producto que se está editando
+        let codeReader; // Para el escáner de código de barras
+        document.querySelector(".guide-frame").style.display = "none";
+    
+        // Mostrar el formulario de registro
+        document.getElementById("addButton").addEventListener("click", () => {
+            document.getElementById("productForm").style.display = "block";
+            document.getElementById("productList").style.display = "none";
+            document.querySelector(".addProductContainer").style.display = "none";
+            document.getElementById("saveButton").style.display = "none"; // Ocultar botón guardar al mostrar formulario
+            document.querySelector(".guide-frame").style.display = "none";
+            document.getElementById("scanBarcodeButton").style.display = "block";
+        });
+    
+        // Configuración personalizada para alta resolución
+        const constraints = {
+            video: {
+                facingMode: "environment", // Usamos la cámara trasera
+                width: { ideal: 1280 },     // Resolución ideal
+                height: { ideal: 720 }      // Resolución ideal
+            }
+        };
+    
+        // Función para empezar el escaneo de código de barras
+        function startScanning() {
+            // Ocultar la sección de inicio y mostrar el escáner
+            document.getElementById("productList").style.display = "none";
+            document.querySelector(".addProductContainer").style.display = "none";
+            document.getElementById("videoContainer").style.display = "block";
+            document.getElementById("productForm").style.display = "none"; // Ocultar el formulario mientras se escanea
+    
+            // Mostrar el marco verde
+            document.querySelector(".guide-frame").style.display = "block";
+    
+            // Iniciar el escáner con los constraints de alta resolución
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then((stream) => {
+                    const videoElement = document.getElementById("video");
+                    videoElement.srcObject = stream;
+    
+                    codeReader = new ZXing.BrowserMultiFormatReader();
+                    codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
+                        if (result) {
+                            // Reproducir el sonido de escaneo
+                            const scannerSound = new Audio('sounds/scaner.mp3');  // Ruta del archivo de sonido
+                            scannerSound.play();
+    
+                            // Al escanear, rellenamos el campo EAN con el código escaneado
+                            document.getElementById("ean").value = result.text;
+                            stopScanning();  // Detener el escaneo y regresar al formulario
+                        }
+                        if (error) {
+                            console.error(error);
+                        }
+                    });
+                })
+                .catch((err) => {
+                    console.error("Error al acceder a la cámara: ", err);
+                });
+        }
+    
+        // Detener el escaneo y ocultar el video
+        function stopScanning() {
+            // Detener el escáner y ocultar el video
+            if (codeReader) {
+                codeReader.reset();
+            }
+            document.getElementById("video").style.display = "none"; // Ocultar el video
+            document.getElementById("videoContainer").style.display = "none"; // Ocultar el contenedor del escáner
+            document.getElementById("productForm").style.display = "block"; // Mostrar el formulario
+            document.getElementById("productList").style.display = "none"; // Mantener oculta la lista de productos
+            document.querySelector(".addProductContainer").style.display = "none"; // Ocultar la opción de añadir producto
+            document.getElementById("saveButton").style.display = "none"; // Ocultar el botón guardar
+    
+            // Ocultar el marco verde
+            document.querySelector(".guide-frame").style.display = "none";
+        }
+    
+        // Registrar un nuevo producto o editar uno existente
+        document.getElementById("registerButton").addEventListener("click", () => {
+            // Obtener los valores de los campos
+            const ean = document.getElementById("ean").value;
+            const as400 = document.getElementById("as400").value;
+            const nombre = document.getElementById("nombre").value;
+            const precio = parseFloat(document.getElementById("precio").value);
+            const stock = parseInt(document.getElementById("stock").value);
+            const descuento = parseFloat(document.getElementById("descuento").value);
+            const precio_descuento = parseFloat(document.getElementById("precio_descuento").value);
+            const categoria = document.getElementById("categoria").value;
+            const imagen = document.getElementById("imagen").value;
+    
+            // Validar que todos los campos obligatorios estén completos
+            if (!ean || !as400 || !nombre || !precio || !stock || !descuento || !precio_descuento || !categoria) {
+                alert("Por favor, complete todos los campos obligatorios antes de registrar el producto.");
+                return; // Detener la función si hay campos vacíos
+            }
+    
+            const newProduct = {
+                ean: ean,
+                as400: as400,
+                nombre: nombre,
+                precio: precio,
+                stock: stock,
+                descuento: descuento,
+                precio_descuento: precio_descuento,
+                categoria: categoria,
+                imagen: imagen
+            };
+    
+            if (currentEditingProduct) {
+                // Si estamos editando, reemplazamos el producto en la lista
+                const index = productList.findIndex(product => product.ean === currentEditingProduct.ean);
+                productList[index] = newProduct;
+            } else {
+                // Si no estamos editando, agregamos el producto como nuevo
+                productList.push(newProduct);
+            }
+    
+            updateProductList();
+            resetForm();
+            document.getElementById("productForm").style.display = "none"; // Ocultar formulario después de registrar
+            document.getElementById("scanBarcodeButton").style.display = "none";
+            document.getElementById("productList").style.display = "block"; // Mostrar la lista de productos
+            document.querySelector(".addProductContainer").style.display = "flex"; // Mostrar la opción de añadir producto
+            document.getElementById("saveButton").style.display = "block"; // Mostrar el botón guardar
+        });
+    
+        // Actualizar la lista de productos en la web
+        function updateProductList() {
+            const productDiv = document.getElementById("productList");
+            const productHTML = productList.map(product => {
+                return `<div class="productBlock" onclick="editProduct('${product.ean}')">
+                            <span>${product.ean}</span>
+                        </div>`;
+            }).join("");
+            productDiv.innerHTML = `<h3>Lista de productos registrados:</h3>${productHTML}`;
+        }
+    
+        // Función para guardar el archivo JSON con formato
+        document.getElementById("saveButton").addEventListener("click", () => {
+            // Convertir el arreglo productList a un formato JSON bonito (con indentación)
+            const formattedJson = JSON.stringify(productList, null, 4);  // El "4" es para la indentación (4 espacios)
+            const blob = new Blob([formattedJson], { type: "application/json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "productos.json";
+            link.click();
+        });
+    
+        // Función para editar un producto
+        function editProduct(ean) {
+            const product = productList.find(product => product.ean === ean);
+            if (product) {
+                document.getElementById("ean").value = product.ean;
+                document.getElementById("as400").value = product.as400;
+                document.getElementById("nombre").value = product.nombre;
+                document.getElementById("precio").value = product.precio;
+                document.getElementById("stock").value = product.stock;
+                document.getElementById("descuento").value = product.descuento;
+                document.getElementById("precio_descuento").value = product.precio_descuento;
+                document.getElementById("categoria").value = product.categoria;
+                document.getElementById("imagen").value = product.imagen;
+    
+                document.getElementById("registerButton").innerText = "Editar";  // Cambiar el texto del botón
+                currentEditingProduct = product;  // Guardar el producto que estamos editando
+    
+                document.getElementById("productForm").style.display = "block";
+                document.getElementById("productList").style.display = "none";
+                document.querySelector(".addProductContainer").style.display = "none";
+                document.getElementById("saveButton").style.display = "none"; // Ocultar botón guardar al mostrar formulario
+            }
+        }
+    
+        // Resetear el formulario
+        function resetForm() {
+            document.getElementById("ean").value = '';
+            document.getElementById("as400").value = '';
+            document.getElementById("nombre").value = '';
+            document.getElementById("precio").value = '';
+            document.getElementById("stock").value = '';
+            document.getElementById("descuento").value = '';
+            document.getElementById("precio_descuento").value = '';
+            document.getElementById("categoria").value = '';
+            document.getElementById("imagen").value = '';
+            document.getElementById("registerButton").innerText = "Registrar"; // Volver al texto original
+            currentEditingProduct = null;  // Limpiar el producto que se está editando
+        }
+    
+    </script>
+</body>
+</html>

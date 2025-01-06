@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Código de Barras</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <h1>Consultar Códigos</h1>
+        <p id="barcodeMessage">Coloca el código de barras dentro del marco para escanear.</p>
+        <button id="startScan">Escanear Código de Barras</button>
+        <button id="manualEntry">Buscar Manualmente</button>
+        <button id="searchProduct" class="inline-button hidden">Buscar Producto</button>
+        
+        <div id="videoContainer" class="hidden">
+            <video id="video" autoplay></video>
+            <div id="overlay">
+                <div class="guide-frame"></div>
+            </div>
+        </div>
+
+        <div id="form-container" class="hidden">
+            <form id="productForm">
+                <!-- Campo único para EAN-13 -->
+                <div class="form-group">
+                    <label for="ean">EAN-13:</label>
+                    <input type="text" id="ean">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-column">
+                        <label for="as400">AS400:</label>
+                        <input type="text" id="as400" disabled>
+                    </div>
+                    <div class="form-column">
+                        <label for="categoria">Categoría:</label>
+                        <input type="text" id="categoria" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" disabled>
+                </div>
+                <div class="form-row">
+                    <div class="form-column">
+                        <label for="stock">Stock:</label>
+                        <input type="text" id="stock" disabled>
+                    </div>
+                    <div class="form-column">
+                        <label for="precio">Precio:</label>
+                        <input type="text" id="precio" disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-column">
+                        <label for="descuento">Oferta:</label>
+                        <input type="text" id="descuento" disabled>
+                    </div>
+                    <div class="form-column">
+                        <label for="precio_descuento">Precio Oferta:</label>
+                        <input type="text" id="precio_descuento" disabled>
+                    </div>
+                </div>
+
+                <div id="productoInfo" style="display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 20px;">
+                    <label for="imagenProducto" style="margin-bottom: 10px;">Imagen del Producto:</label>
+                    <img id="imagenProducto" src="" alt="Imagen del producto" 
+                         style="display: none; max-width: 300px; max-height: 300px; border: 1px solid #ddd; padding: 10px; border-radius: 10px;">
+                </div>
+            </form>
+        </div>
+
+        <button id="stopScan" class="hidden">Detener Escaneo</button>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #000000;
+    }
+
+    .login-container,
+    .options-container {
+      background-color: white;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 30px;
+      width: 300px;
+      text-align: center;
+    }
+
+    .login-container h2,
+    .options-container h2 {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 94%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #e30e0e;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error-message {
+      color: red;
+      text-align: center;
+      display: none;
+    }
+
+    .options-container button {
+      margin: 5px 0; /* Espacio entre los botones */
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container" id="login-container">
+    <h2>Iniciar sesión</h2>
+    <div class="error-message" id="error-message">Usuario o contraseña incorrectos.</div>
+    <form id="login-form">
+      <input type="text" id="usuario" placeholder="Usuario" required>
+      <input type="password" id="contrasena" placeholder="Contraseña" required>
+      <button type="submit">Iniciar sesión</button>
+    </form>
+  </div>
+
+  <div class="options-container hidden" id="options-container">
+    <h2>Selecciona una opción</h2>
+    <button id="opcion1">Registro de Datos</button>
+    <button id="opcion2">Escaneo de Código</button>
+    <!-- Agrega más botones si es necesario -->
+  </div>
+
+  <script>
+    // Obtener elementos del DOM
+    const form = document.getElementById("login-form");
+    const usuarioInput = document.getElementById("usuario");
+    const contrasenaInput = document.getElementById("contrasena");
+    const errorMessage = document.getElementById("error-message");
+    const loginContainer = document.getElementById("login-container");
+    const optionsContainer = document.getElementById("options-container");
+
+    // Cargar el archivo JSON de usuarios
+    async function cargarUsuarios() {
+      const response = await fetch('usuarios.json');
+      const data = await response.json();
+      return data.usuarios;
+    }
+
+    // Manejar el evento submit del formulario
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault(); // Evitar que el formulario se envíe
+
+      const usuario = usuarioInput.value;
+      const contrasena = contrasenaInput.value;
+
+      // Cargar los usuarios y verificar las credenciales
+      const usuarios = await cargarUsuarios();
+
+      const usuarioValido = usuarios.find(user => user.usuario === usuario && user.contrasena === contrasena);
+
+      if (usuarioValido) {
+        // Ocultar el formulario de login
+        loginContainer.classList.add("hidden");
+        // Mostrar la sección de opciones
+        optionsContainer.classList.remove("hidden");
+        errorMessage.style.display = "none"; // Ocultar el mensaje de error
+        alert("¡Login exitoso!");
+
+        // Iniciar el temporizador para cerrar sesión después de 5 minutos de inactividad (300,000 ms)
+        iniciarTemporizador();
+      } else {
+        errorMessage.style.display = "block"; // Mostrar el mensaje de error
+      }
+    });
+
+    // Función para cerrar sesión
+    function cerrarSesion() {
+      alert("Tu sesión ha expirado por inactividad.");
+      loginContainer.classList.remove("hidden");
+      optionsContainer.classList.add("hidden");
+    }
+
+    // Función para iniciar el temporizador
+    let temporizador;
+    function iniciarTemporizador() {
+      // Cerrar sesión después de 15 minutos (900,000 ms)
+      temporizador = setTimeout(cerrarSesion, 900000);
+
+      // Reiniciar el temporizador al detectar actividad del usuario
+      document.body.addEventListener('mousemove', reiniciarTemporizador);
+      document.body.addEventListener('keypress', reiniciarTemporizador);
+    }
+
+    // Función para reiniciar el temporizador
+    function reiniciarTemporizador() {
+      clearTimeout(temporizador);
+      iniciarTemporizador();
+    }
+
+    // Manejar los botones de opciones
+    document.getElementById("opcion1").addEventListener("click", function() {
+      window.location.href = 'RegistroDatos.html'; // Redirigir a RegistroDatos.html
+    });
+
+    document.getElementById("opcion2").addEventListener("click", function() {
+      window.location.href = 'EscaneoCodigoBarras.html'; // Redirigir a EscaneoCodigoBarras.html
+    });
+  </script>
+
+</body>
+</html>
