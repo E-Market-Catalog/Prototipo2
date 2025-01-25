@@ -89,6 +89,9 @@ button:hover {
     text-align: left;
 }
 
+input#nombre {
+    text-transform: uppercase;
+}
 
 .form-group,
 .form-row {

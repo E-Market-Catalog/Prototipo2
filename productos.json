@@ -5,31 +5,42 @@
         "nombre": "Figura War Machine Marvel Legends Series Civil War",
         "precio": 159.90,
         "stock": 1,
-        "descuento": -50,
+        "descuento": 50,
         "precio_descuento": 79.90,
         "categoria": "Juguetes",
         "imagen": "images/Figura War Machine Marvel Legends Series Civil War.jpg"
     },
     {
-        "ean": "7501006710403",
-        "as400": "234567",
-        "nombre": "Producto B",
-        "precio": 20.0,
-        "stock": 50,
-        "descuento": 5,
-        "precio_descuento": 19.0,
-        "categoria": "Snacks",
-        "imagen": "images/Figura War Machine Marvel Legends Series Civil War.jpg"
+        "ean": "2050000650765",
+        "as400": "680930",
+        "nombre": "Pistola de burbujas con luces Azul",
+        "precio": 29.90,
+        "stock": 2,
+        "descuento": 20,
+        "precio_descuento": 23.9,
+        "categoria": "Juguetes",
+        "imagen": "images/pistola-de-burbujas-con-luz-81639-default-1.jpg"
     },
     {
-        "ean": "4561237890123",
-        "as400": "345678",
-        "nombre": "Producto C",
-        "precio": 15.0,
-        "stock": 200,
-        "descuento": 20,
-        "precio_descuento": 12.0,
-        "categoria": "Lácteos",
-        "imagen": "images/Figura War Machine Marvel Legends Series Civil War.jpg"
+        "ean": "027084120134",
+        "as400": "401269",
+        "nombre": "Hw auto básico x 1",
+        "precio": 9.90,
+        "stock": 4,
+        "descuento": 0,
+        "precio_descuento": 0.0,
+        "categoria": "Juguetes",
+        "imagen": "images/Autos Básicos Hot Wheels Surtido.jpg"
+    },
+    {
+        "ean": "5010996126788",
+        "as400": "561701",
+        "nombre": "Figura Battle Droid Star Wars The Black Series Hasbro",
+        "precio": 200,
+        "stock": 1,
+        "descuento": 30,
+        "precio_descuento": 150,
+        "categoria": "Juguetes",
+        "imagen": "images/Figura Battle Droid Star Wars The Black Series Hasbro.jpg"
     }
 ]

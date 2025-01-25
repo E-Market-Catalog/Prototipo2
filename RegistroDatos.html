@@ -115,6 +115,17 @@
             transition: background-color 0.3s ease;
         }
 
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1em;
+            box-sizing: border-box;
+            text-align: center;  /* Centra el texto dentro de las casillas */
+        }
+
         .productBlock:hover {
             background-color: #e0e0e0;
         }
@@ -189,6 +200,11 @@
             margin-top: 20px;
             padding: 0 20px;
         }
+
+        input#nombre {
+            text-transform: uppercase;
+        }
+
 
         .addProductText {
             font-size: 1.2em;
@@ -370,20 +386,52 @@
         <h2>Registrar Producto</h2>
         <label for="ean">EAN:</label>
         <input type="text" id="ean" required><br>
+
         <label for="as400">AS400:</label>
         <input type="text" id="as400" required><br>
+
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" required><br>
+
         <label for="precio">Precio:</label>
         <input type="number" id="precio" required><br>
+
         <label for="stock">Stock:</label>
         <input type="number" id="stock" required><br>
-        <label for="descuento">Descuento:</label>
-        <input type="number" id="descuento" required><br>
+
+        <label for="descuento">Descuento (%):</label>
+        <select id="descuento" required>
+            <option value="0">0%</option>
+            <option value="5">5%</option>
+            <option value="10">10%</option>
+            <option value="15">15%</option>
+            <option value="20">20%</option>
+            <option value="25">25%</option>
+            <option value="30">30%</option>
+            <option value="35">35%</option>
+            <option value="40">40%</option>
+            <option value="45">45%</option>
+            <option value="50">50%</option>
+            <option value="55">55%</option>
+            <option value="60">60%</option>
+            <option value="65">65%</option>
+            <option value="70">70%</option>
+            <option value="75">75%</option>
+            <option value="80">80%</option>
+        </select><br>
+
         <label for="precio_descuento">Precio con descuento:</label>
-        <input type="number" id="precio_descuento" required><br>
+        <input type="number" id="precio_descuento" required readonly><br>
+
         <label for="categoria">Categoría:</label>
-        <input type="text" id="categoria" required><br>
+        <select id="categoria" required>
+            <option value=""></option> <!-- Opciones vacías para el select -->
+            <option value="juguetes">Juguetes</option>
+            <option value="utiles">Útiles</option>
+            <option value="ropa">Ropa</option>
+            <option value="libros">Libros</option>
+        </select><br>
+
         <label for="imagen">Imagen (URL):</label>
         <input type="text" id="imagen" required><br>
 
@@ -399,6 +447,24 @@
     </div>
 
     <script>
+
+        // Función para calcular el precio con descuento
+        function calcularDescuento() {
+            const precio = parseFloat(document.getElementById('precio').value) || 0;
+            const descuento = parseFloat(document.getElementById('descuento').value) || 0;
+
+            if (precio > 0 && descuento >= 0) {
+                const precioConDescuento = precio - (precio * (descuento / 100));
+                document.getElementById('precio_descuento').value = precioConDescuento.toFixed(2);
+            } else {
+                document.getElementById('precio_descuento').value = '';
+            }
+        }
+
+        // Eventos para detectar cambios en precio y descuento
+        document.getElementById('precio').addEventListener('input', calcularDescuento);
+        document.getElementById('descuento').addEventListener('input', calcularDescuento);
+
         const productList = [];
         let currentEditingProduct = null;  // Variable para almacenar el producto que se está editando
         let codeReader; // Para el escáner de código de barras
