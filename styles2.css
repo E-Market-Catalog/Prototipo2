@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 40px;
+    width: 400px;
+    position: relative;
+    z-index: 10; /* Asegura que el formulario esté por encima del loader */
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 16px;
+    color: #2b2727;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 12px;
+    background-color: #c62828;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #22b642;
+}
+
+#mensaje {
+    margin-top: 20px;
+    font-size: 16px;
+    color: rgb(44, 142, 36);
+    text-align: center;
+   
+}
+
+/* Círculo de carga */
+#cargando {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border: 8px solid #f3f3f3; /* Fondo del círculo */
+    border-top: 8px solid #7d7b7b; /* Color de la animación */
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+    z-index: 20; /* Asegura que el círculo de carga esté por encima de todo */
+}
+
+
+/* Fondo oscuro semitransparente */
+#fondoOscuro {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo gris oscuro con opacidad */
+    z-index: 15; /* El fondo oscuro estará debajo del círculo de carga */
+    display: none; /* Inicialmente oculto */
+}
+
+/* Animación de rotación del círculo */
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#cantidadStock {
+    padding: 10px;
+    font-size: 16px;
+    width: 240px; /* Aumenté el ancho del campo */
+}
+
+.operacion-btn {
+    padding: 10px;
+    font-size: 18px;
+    background-color: white; /* Color blanco por defecto */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 50px; /* Aumenté el ancho de los botones */
+    color: black; /* Color de texto por defecto */
+}
+
+.operacion-btn:hover {
+    background-color: #ddd; /* Color al pasar el mouse */
+}
+
+.operacion-btn.sumar {
+    background-color: white; /* Blanco por defecto */
+    color: black; /* Texto negro */
+}
+
+.operacion-btn.restar {
+    background-color: white; /* Blanco por defecto */
+    color: black; /* Texto negro */
+}

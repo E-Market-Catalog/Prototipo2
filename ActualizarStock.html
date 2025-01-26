@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Stock</title>
+    <link rel="stylesheet" href="styles2.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Actualizar Stock del Producto</h1>
+        <form id="formularioStock">
+            <label for="codigoProducto">Código (AS400):</label>
+            <input type="text" id="codigoProducto" placeholder="Ingresa el código de 6 dígitos" required>
+            
+            <label for="cantidadStock">Cantidad a Sumar/Restar:</label>
+            <div class="input-container">
+                <input type="text" id="cantidadStock" placeholder="Cantidad" required>
+                <!-- Botones de operación al lado del campo de cantidad -->
+                <button type="button" id="suma" class="operacion-btn sumar">+</button>
+                <button type="button" id="resta" class="operacion-btn restar">-</button>
+            </div>
+            
+            <button type="submit">Actualizar Stock</button>
+        </form>
+        <div id="mensaje"></div>
+        <!-- Fondo gris oscuro -->
+        <div id="fondoOscuro"></div>
+
+        <!-- Mensaje de carga -->
+        <div id="cargando" style="display: none;"></div> 
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7tSbxFzh208BeD5Pt6-SnUpHUsO1TuII",
+            authDomain: "mi-proyecto-b5d32.firebaseapp.com",
+            projectId: "mi-proyecto-b5d32",
+            storageBucket: "mi-proyecto-b5d32.firebasestorage.app",
+            messagingSenderId: "841741757512",
+            appId: "1:841741757512:web:e4962015114f7e2a8c3c7d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Variable para almacenar la operación seleccionada
+        let operacion = 1; // 1 para suma, -1 para resta
+
+        // Detectar la operación seleccionada
+        document.getElementById('suma').addEventListener('click', () => {
+            operacion = 1; // Suma
+            document.getElementById('suma').classList.add('activo');
+            document.getElementById('resta').classList.remove('activo');
+        });
+
+        document.getElementById('resta').addEventListener('click', () => {
+            operacion = -1; // Resta
+            document.getElementById('resta').classList.add('activo');
+            document.getElementById('suma').classList.remove('activo');
+        });
+
+        document.getElementById('formularioStock').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            document.getElementById('fondoOscuro').style.display = 'block';
+            document.getElementById('cargando').style.display = 'block';
+
+            const codigoProducto = document.getElementById('codigoProducto').value;
+            const cantidadStock = parseInt(document.getElementById('cantidadStock').value);
+
+            if (isNaN(cantidadStock)) {
+                document.getElementById('mensaje').textContent = "Por favor ingresa una cantidad válida.";
+                document.getElementById('cargando').style.display = 'none';
+                return;
+            }
+
+            const productoRef = doc(db, "productos", codigoProducto);
+
+            try {
+                const docSnapshot = await getDoc(productoRef);
+                if (docSnapshot.exists()) {
+                    const stockActual = docSnapshot.data().stock;
+
+                    // Aplicamos la operación (suma o resta)
+                    const nuevoStock = stockActual + (cantidadStock * operacion);
+
+                    setTimeout(async () => {
+                        await updateDoc(productoRef, { stock: nuevoStock });
+
+                        document.getElementById('mensaje').textContent = "Stock actualizado exitosamente.";
+                        document.getElementById('codigoProducto').value = '';
+                        document.getElementById('cantidadStock').value = '';
+                        
+                        document.getElementById('fondoOscuro').style.display = 'none';
+                        document.getElementById('cargando').style.display = 'none';
+                    }, 1000);
+                } else {
+                    document.getElementById('mensaje').textContent = "Producto no encontrado.";
+                    document.getElementById('fondoOscuro').style.display = 'none';
+                    document.getElementById('cargando').style.display = 'none';
+                }
+            } catch (error) {
+                document.getElementById('mensaje').textContent = "Error al actualizar el stock: " + error;
+                document.getElementById('fondoOscuro').style.display = 'none';
+                document.getElementById('cargando').style.display = 'none';
+            }
+
+        });
+
+        document.querySelector('.sumar').addEventListener('click', function() {
+            // Cambiar a verde cuando se presiona el botón "sumar"
+            document.querySelector('.sumar').style.backgroundColor = '#28a745'; // Verde para sumar
+            document.querySelector('.sumar').style.color = 'white'; // Texto blanco en sumar
+
+            // Volver a blanco el botón "restar"
+            document.querySelector('.restar').style.backgroundColor = 'white'; // Blanco para restar
+            document.querySelector('.restar').style.color = 'black'; // Texto negro en restar
+        });
+
+        document.querySelector('.restar').addEventListener('click', function() {
+            // Cambiar a rojo cuando se presiona el botón "restar"
+            document.querySelector('.restar').style.backgroundColor = '#dc3545'; // Rojo para restar
+            document.querySelector('.restar').style.color = 'white'; // Texto blanco en restar
+
+            // Volver a blanco el botón "sumar"
+            document.querySelector('.sumar').style.backgroundColor = 'white'; // Blanco para sumar
+            document.querySelector('.sumar').style.color = 'black'; // Texto negro en sumar
+        });
+
+
+    </script>
+</body>
+</html>

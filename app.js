@@ -70,37 +70,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Mostrar el código EAN-13 escaneado en el formulario
                     eanInput.value = result.text;
-
-                    // Buscar en el JSON los detalles del producto
+                    
+                    // Buscar en el JSON los detalles del producto (excepto el stock)
                     fetch('productos.json')
-                        .then(response => response.json())
-                        .then(productos => {
-                            const producto = productos.find(p => p.ean === result.text);
-                            if (producto) {
-                                // Mostrar la información del producto en el formulario
-                                document.getElementById("nombre").value = producto.nombre;
-                                document.getElementById("precio").value = producto.precio;
-                                document.getElementById("stock").value = producto.stock;
-                                document.getElementById("descuento").value = `${producto.descuento}%`; // Mostrar porcentaje
-                                document.getElementById("precio_descuento").value = producto.precio_descuento;
-                                document.getElementById("categoria").value = producto.categoria;
-                                document.getElementById("as400").value = producto.as400;
+                    .then(response => response.json())
+                    .then(productos => {
+                        const producto = productos.find(p => p.ean === result.text);
+                        if (producto) {
+                            // Mostrar la información del producto en el formulario (excepto el stock)
+                            document.getElementById("nombre").value = producto.nombre;
+                            document.getElementById("precio").value = producto.precio;
+                            document.getElementById("descuento").value = `${producto.descuento}%`; 
+                            document.getElementById("precio_descuento").value = producto.precio_descuento;
+                            document.getElementById("categoria").value = producto.categoria;
+                            document.getElementById("as400").value = producto.as400;
 
-                                // Mostrar la imagen del producto
-                                const imgElement = document.getElementById("imagenProducto");
-                                imgElement.src = producto.imagen;
-                                imgElement.alt = `Imagen de ${producto.nombre}`;
-                                imgElement.style.display = "block"; // Asegurarse de que sea visible
+                            // Mostrar la imagen del producto
+                            const imgElement = document.getElementById("imagenProducto");
+                            imgElement.src = producto.imagen;
+                            imgElement.alt = `Imagen de ${producto.nombre}`;
+                            imgElement.style.display = "block"; 
 
-                            } else {
-                                alert("Producto no encontrado");
-                            }
-                        })
-                        .catch(err => {
-                            console.error("Error al cargar los productos:", err);
-                            alert("Error al buscar la información del producto.");
-                        });
+                            // Obtener el stock desde Firebase usando el código AS400 (sin prefijo)
+                            obtenerStockDesdeFirebase(producto.as400);
+                        } else {
+                            alert("Producto no encontrado");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error al cargar los productos:", err);
+                        alert("Error al buscar la información del producto.");
+                    });
 
+                    async function obtenerStockDesdeFirebase(codigoAS400) {
+                    const productoRef = doc(db, "productos", codigoAS400);
+                    try {
+                        const docSnap = await getDoc(productoRef);
+                        if (docSnap.exists()) {
+                            document.getElementById("stock").value = docSnap.data().stock;
+                        } else {
+                            document.getElementById("stock").value = "No disponible";
+                        }
+                    } catch (error) {
+                        console.error("Error al obtener el stock desde Firebase:", error);
+                        document.getElementById("stock").value = "Error";
+                    }
+                    }
                     // Detener el escaneo
                     videoContainer.classList.add("hidden");
                     stopScanButton.classList.add("hidden");
