@@ -286,6 +286,46 @@
             height: 35%;
         }
 
+        /* Fondo gris oscuro para la pantalla de carga */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        /* Contenedor del spinner y mensaje */
+        .loading-overlay {
+            text-align: center;
+            color: white;
+        }
+
+        /* Spinner animado */
+        .spinner {
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -437,13 +477,16 @@
 
         <button id="registerButton">Registrar</button>
 
-        <!-- Fondo gris oscuro -->
-        <div id="fondoOscuro"></div>
-
-        <!-- Mensaje de carga -->
-        <div id="cargando" style="display: none;"></div>
-
     </div>
+
+    <!-- Mensaje de carga -->
+    <div id="loadingScreen" style="display: none;">
+        <div class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Guardando datos, por favor espera...</p>
+        </div>
+    </div>
+
 
     <!-- Contenedor del escáner de código de barras -->
     <div id="videoContainer" class="hidden">
@@ -472,14 +515,16 @@
 
         // Función para guardar los productos en Firebase
         document.getElementById("saveButton").addEventListener("click", async () => {
+            // Mostrar el simulador de carga
+            const loadingScreen = document.getElementById("loadingScreen");
+            loadingScreen.style.display = "flex";
+
             try {
                 // Guardar cada producto de la lista en Firebase
                 for (const product of productList) {
-                    await setDoc(doc(db, "productos", product.as400), product); // Usar el código AS400 como identificador
+                    await setDoc(doc(db, "productos", product.ean), product); // Usar el código AS400 como identificador
                 }
 
-                alert("Productos guardados exitosamente en la base de datos.");
-                
                 // Vaciar la lista de productos en memoria
                 productList.length = 0;
 
@@ -494,12 +539,15 @@
                 document.getElementById("productList").style.display = "block"; // Mostrar la lista de productos (vacía)
                 document.querySelector(".addProductContainer").style.display = "flex"; // Mostrar la opción de añadir producto
                 document.getElementById("saveButton").style.display = "none"; // Ocultar el botón guardar después de guardar
-
             } catch (error) {
                 console.error("Error al guardar en Firebase:", error);
                 alert("Hubo un error al guardar los productos.");
+            } finally {
+                // Ocultar el simulador de carga
+                loadingScreen.style.display = "none";
             }
         });
+
 
 
     </script>
@@ -615,7 +663,7 @@
             const imagen = document.getElementById("imagen").value;
 
             // Validar que todos los campos obligatorios estén completos
-            if (!ean || !as400 || !nombre || !precio || !stock || !precio_descuento || !categoria) {
+            if (!ean || !nombre || !precio || !stock || !precio_descuento || !categoria) {
                 alert("Por favor, complete todos los campos obligatorios antes de registrar el producto.");
                 return; // Detener la función si hay campos vacíos
             }
