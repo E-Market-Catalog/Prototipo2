@@ -12,6 +12,8 @@ body {
     align-items: center;
     height: 100vh;
     position: relative;
+    margin: 0; /* Asegura que el cuerpo no tenga márgenes */
+    padding: 0;
 }
 
 .container {
@@ -19,7 +21,8 @@ body {
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 40px;
-    width: 400px;
+    width: 100%;
+    max-width: 400px; /* Limita el ancho máximo */
     position: relative;
     z-index: 10; /* Asegura que el formulario esté por encima del loader */
 }
@@ -28,6 +31,7 @@ h1 {
     text-align: center;
     margin-bottom: 16px;
     color: #2b2727;
+    font-size: 22px; /* Ajusta el tamaño del título */
 }
 
 form {
@@ -55,6 +59,7 @@ button {
     border: none;
     border-radius: 12px;
     cursor: pointer;
+    width: 100%; /* Asegura que el botón ocupe todo el ancho disponible */
 }
 
 button:hover {
@@ -66,10 +71,8 @@ button:hover {
     font-size: 16px;
     color: rgb(44, 142, 36);
     text-align: center;
-   
 }
 
-/* Círculo de carga */
 #cargando {
     position: absolute;
     top: 50%;
@@ -84,8 +87,6 @@ button:hover {
     z-index: 20; /* Asegura que el círculo de carga esté por encima de todo */
 }
 
-
-/* Fondo oscuro semitransparente */
 #fondoOscuro {
     position: fixed;
     top: 0;
@@ -97,7 +98,6 @@ button:hover {
     display: none; /* Inicialmente oculto */
 }
 
-/* Animación de rotación del círculo */
 @keyframes spin {
     0% { transform: translate(-50%, -50%) rotate(0deg); }
     100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -112,30 +112,72 @@ button:hover {
 #cantidadStock {
     padding: 10px;
     font-size: 16px;
-    width: 240px; /* Aumenté el ancho del campo */
+    width: 100%; /* Ajusta el campo de cantidad para que ocupe todo el ancho */
+    max-width: 240px; /* Limita el ancho máximo del campo */
 }
 
 .operacion-btn {
     padding: 10px;
     font-size: 18px;
-    background-color: white; /* Color blanco por defecto */
+    background-color: white;
     border: 1px solid #ccc;
     border-radius: 4px;
     cursor: pointer;
-    width: 50px; /* Aumenté el ancho de los botones */
-    color: black; /* Color de texto por defecto */
+    width: 50px;
+    color: black;
 }
 
 .operacion-btn:hover {
-    background-color: #ddd; /* Color al pasar el mouse */
+    background-color: #ddd;
 }
 
 .operacion-btn.sumar {
-    background-color: white; /* Blanco por defecto */
-    color: black; /* Texto negro */
+    background-color: white;
+    color: black;
 }
 
 .operacion-btn.restar {
-    background-color: white; /* Blanco por defecto */
-    color: black; /* Texto negro */
+    background-color: white;
+    color: black;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 480px) {
+    body {
+        padding: 0 15px; /* Ajusta el padding */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .container {
+        width: 100%;
+        padding: 15px;
+        max-width: 90%; /* Limita el ancho a un 90% del viewport */
+        box-sizing: border-box; /* Asegura que el padding no sume al ancho total */
+    }
+
+    h1 {
+        font-size: 20px; /* Ajusta el tamaño del título para pantallas más pequeñas */
+    }
+
+    input, .operacion-btn {
+        font-size: 16px; /* Ajusta el tamaño de los inputs y botones */
+    }
+
+    .input-container {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    #cantidadStock {
+        width: 100%; /* Asegura que el campo de cantidad ocupe el ancho completo */
+        max-width: none; /* Elimina el límite de 240px */
+    }
+
+    .operacion-btn {
+        width: 100%; /* Hace que los botones ocupen todo el ancho disponible */
+    }
 }

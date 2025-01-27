@@ -92,7 +92,7 @@
             width: 90%;
             max-width: 500px;
             margin-top: 20px;
-            text-align: left;
+            text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -436,6 +436,13 @@
         <input type="text" id="imagen" required><br>
 
         <button id="registerButton">Registrar</button>
+
+        <!-- Fondo gris oscuro -->
+        <div id="fondoOscuro"></div>
+
+        <!-- Mensaje de carga -->
+        <div id="cargando" style="display: none;"></div>
+
     </div>
 
     <!-- Contenedor del escáner de código de barras -->
@@ -446,8 +453,58 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7tSbxFzh208BeD5Pt6-SnUpHUsO1TuII",
+            authDomain: "mi-proyecto-b5d32.firebaseapp.com",
+            projectId: "mi-proyecto-b5d32",
+            storageBucket: "mi-proyecto-b5d32.firebasestorage.app",
+            messagingSenderId: "841741757512",
+            appId: "1:841741757512:web:e4962015114f7e2a8c3c7d"
+        };
+        
+        // Inicializa Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app); // Inicializa Firestore
+
+        // Función para guardar los productos en Firebase
+        document.getElementById("saveButton").addEventListener("click", async () => {
+            try {
+                // Guardar cada producto de la lista en Firebase
+                for (const product of productList) {
+                    await setDoc(doc(db, "productos", product.as400), product); // Usar el código AS400 como identificador
+                }
+
+                alert("Productos guardados exitosamente en la base de datos.");
+                
+                // Vaciar la lista de productos en memoria
+                productList.length = 0;
+
+                // Resetear el formulario
+                resetForm();
+
+                // Actualizar la lista visualmente (esto ya no debe mostrar productos)
+                updateProductList();
+
+                // Restaurar la vista inicial
+                document.getElementById("productForm").style.display = "none";
+                document.getElementById("productList").style.display = "block"; // Mostrar la lista de productos (vacía)
+                document.querySelector(".addProductContainer").style.display = "flex"; // Mostrar la opción de añadir producto
+                document.getElementById("saveButton").style.display = "none"; // Ocultar el botón guardar después de guardar
+
+            } catch (error) {
+                console.error("Error al guardar en Firebase:", error);
+                alert("Hubo un error al guardar los productos.");
+            }
+        });
+
+
+    </script>
+
+    <script>
         // Función para calcular el precio con descuento
         function calcularDescuento() {
             const precio = parseFloat(document.getElementById('precio').value) || 0;
@@ -545,7 +602,7 @@
         }
     
         // Registrar un nuevo producto o editar uno existente
-        document.getElementById("registerButton").addEventListener("click", () => {
+        document.getElementById("registerButton").addEventListener("click", async () => { 
             // Obtener los valores de los campos
             const ean = document.getElementById("ean").value;
             const as400 = document.getElementById("as400").value;
@@ -556,13 +613,13 @@
             const precio_descuento = parseFloat(document.getElementById("precio_descuento").value);
             const categoria = document.getElementById("categoria").value;
             const imagen = document.getElementById("imagen").value;
-    
+
             // Validar que todos los campos obligatorios estén completos
-            if (!ean || !as400 || !nombre || !precio || !stock || !descuento || !precio_descuento || !categoria) {
+            if (!ean || !as400 || !nombre || !precio || !stock || !precio_descuento || !categoria) {
                 alert("Por favor, complete todos los campos obligatorios antes de registrar el producto.");
                 return; // Detener la función si hay campos vacíos
             }
-    
+
             const newProduct = {
                 ean: ean,
                 as400: as400,
@@ -574,7 +631,8 @@
                 categoria: categoria,
                 imagen: imagen
             };
-    
+
+            // Agregar el producto a la lista en memoria
             if (currentEditingProduct) {
                 // Si estamos editando, reemplazamos el producto en la lista
                 const index = productList.findIndex(product => product.ean === currentEditingProduct.ean);
@@ -583,15 +641,19 @@
                 // Si no estamos editando, agregamos el producto como nuevo
                 productList.push(newProduct);
             }
-    
+
+            // Actualizar la lista visualmente
             updateProductList();
             resetForm();
-            document.getElementById("productForm").style.display = "none"; // Ocultar formulario después de registrar
+            
+            // Ocultar formulario después de registrar
+            document.getElementById("productForm").style.display = "none";
             document.getElementById("scanBarcodeButton").style.display = "none";
             document.getElementById("productList").style.display = "block"; // Mostrar la lista de productos
             document.querySelector(".addProductContainer").style.display = "flex"; // Mostrar la opción de añadir producto
             document.getElementById("saveButton").style.display = "block"; // Mostrar el botón guardar
         });
+
     
         // Actualizar la lista de productos en la web
         function updateProductList() {
@@ -604,16 +666,8 @@
             productDiv.innerHTML = `<h3>Lista de productos registrados:</h3>${productHTML}`;
         }
     
-        // Función para guardar el archivo JSON con formato
-        document.getElementById("saveButton").addEventListener("click", () => {
-            // Convertir el arreglo productList a un formato JSON bonito (con indentación)
-            const formattedJson = JSON.stringify(productList, null, 4);  // El "4" es para la indentación (4 espacios)
-            const blob = new Blob([formattedJson], { type: "application/json" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "productos.json";
-            link.click();
-        });
+        
+
     
         // Función para editar un producto
         function editProduct(ean) {

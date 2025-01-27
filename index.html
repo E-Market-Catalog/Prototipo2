@@ -112,7 +112,7 @@
     <button id="opcion1">Registro de Datos</button>
     <button id="opcion2">Escaneo de Código</button>
     <button id="opcion3">Actualizar Stock</button>
-    <!-- Agrega más botones si es necesario -->
+    <button id="cerrar-sesion">Cerrar sesión</button> <!-- Botón para cerrar sesión -->
   </div>
 
   <script>
@@ -129,6 +129,18 @@
       const response = await fetch('usuarios.json');
       const data = await response.json();
       return data.usuarios;
+    }
+
+    // Verificar si la sesión ya está iniciada
+    function verificarSesion() {
+      const sesionActiva = sessionStorage.getItem("sesionActiva");
+      if (sesionActiva === "true") {
+        loginContainer.classList.add("hidden");
+        optionsContainer.classList.remove("hidden");
+      } else {
+        loginContainer.classList.remove("hidden");
+        optionsContainer.classList.add("hidden");
+      }
     }
 
     // Manejar el evento submit del formulario
@@ -151,7 +163,10 @@
         errorMessage.style.display = "none"; // Ocultar el mensaje de error
         alert("¡Login exitoso!");
 
-        // Iniciar el temporizador para cerrar sesión después de 5 minutos de inactividad (300,000 ms)
+        // Guardar en sessionStorage para mantener la sesión activa
+        sessionStorage.setItem("sesionActiva", "true");
+
+        // Iniciar el temporizador para cerrar sesión después de 15 minutos (900,000 ms)
         iniciarTemporizador();
       } else {
         errorMessage.style.display = "block"; // Mostrar el mensaje de error
@@ -161,6 +176,7 @@
     // Función para cerrar sesión
     function cerrarSesion() {
       alert("Tu sesión ha expirado por inactividad.");
+      sessionStorage.removeItem("sesionActiva"); // Eliminar la sesión
       loginContainer.classList.remove("hidden");
       optionsContainer.classList.add("hidden");
     }
@@ -184,17 +200,53 @@
 
     // Manejar los botones de opciones
     document.getElementById("opcion1").addEventListener("click", function() {
-      window.location.href = 'RegistroDatos.html'; // Redirigir a RegistroDatos.html
+        var lastAccessTime = sessionStorage.getItem("lastAccessTime1");
+        var currentTime = new Date().getTime();
+        // Verificar si han pasado más de 5 minutos (300,000 ms) desde el último acceso
+        if (lastAccessTime && currentTime - lastAccessTime < 300000) {
+            window.location.href = 'RegistroDatos.html'; // Redirigir a RegistroDatos.html
+        } else {
+            var clave = prompt("Por favor, ingresa la clave para acceder a la opción 1:");
+            if (clave === "251204") { // Reemplaza "tu_clave_aqui" con la clave real
+                sessionStorage.setItem("lastAccessTime1", currentTime); // Guardar la hora de acceso
+                window.location.href = 'RegistroDatos.html'; // Redirigir a RegistroDatos.html
+            } else {
+                alert("Clave incorrecta. No puedes acceder a esta opción.");
+            }
+        }
+    });
+
+    document.getElementById("opcion3").addEventListener("click", function() {
+        var lastAccessTime = sessionStorage.getItem("lastAccessTime3");
+        var currentTime = new Date().getTime();
+        // Verificar si han pasado más de 5 minutos (300,000 ms) desde el último acceso
+        if (lastAccessTime && currentTime - lastAccessTime < 300000) {
+            window.location.href = 'ActualizarStock.html'; // Redirigir a ActualizarStock.html
+        } else {
+            var clave = prompt("Por favor, ingresa la clave para acceder a la opción 3:");
+            if (clave === "251204") { // Reemplaza "tu_clave_aqui" con la clave real
+                sessionStorage.setItem("lastAccessTime3", currentTime); // Guardar la hora de acceso
+                window.location.href = 'ActualizarStock.html'; // Redirigir a ActualizarStock.html
+            } else {
+                alert("Clave incorrecta. No puedes acceder a esta opción.");
+            }
+        }
     });
 
     document.getElementById("opcion2").addEventListener("click", function() {
       window.location.href = 'EscaneoCodigoBarras.html'; // Redirigir a EscaneoCodigoBarras.html
     });
 
-    document.getElementById("opcion3").addEventListener("click", function() {
-      window.location.href = 'ActualizarStock.html'; // Redirigir a EscaneoCodigoBarras.html
+    // Agregar evento al botón "Cerrar sesión"
+    document.getElementById("cerrar-sesion").addEventListener("click", function() {
+      sessionStorage.removeItem("sesionActiva"); // Eliminar la sesión
+      loginContainer.classList.remove("hidden");
+      optionsContainer.classList.add("hidden");
+      alert("Has cerrado sesión.");
     });
 
+    // Verificar la sesión al cargar la página
+    verificarSesion();
   </script>
 
 </body>
